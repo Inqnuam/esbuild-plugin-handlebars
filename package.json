@@ -1,7 +1,7 @@
 {
   "name": "@homegate/esbuild-plugin-handlebars",
   "description": "an esbuild plugin to handle ... handlebars!",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "main": "dist/index.js",
   "author": "Inqnuam",
   "license": "MIT",
