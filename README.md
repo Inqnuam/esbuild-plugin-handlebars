@@ -1,13 +1,13 @@
 # esbuild-plugin-handlebars
 
+> **This is a fork of [https://github.com/Inqnuam/esbuild-plugin-handlebars](https://github.com/Inqnuam/esbuild-plugin-handlebars) and should be deprecated as soon as [https://github.com/Inqnuam/esbuild-plugin-handlebars/pull/2](https://github.com/Inqnuam/esbuild-plugin-handlebars/pull/2) is merged.**
+
 > an [esbuild](https://github.com/evanw/esbuild) plugin to handle ... handlebars!
 
 ## Installation
 
 ```bash
-yarn add -D esbuild-plugin-handlebars
-# or
-npm install -D esbuild-plugin-handlebars
+yarn add --exact -D @homegate/esbuild-plugin-handlebars
 ```
 
 ## Usage
