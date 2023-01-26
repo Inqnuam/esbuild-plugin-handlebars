@@ -1,4 +1,9 @@
 include:
   - project: 'homegate/projects/npm-packages/project-configs'
-    ref: v6.5.0
+    ref: v6.10.0
     file: '/ci/ts-library-gitlab-ci.yml'
+
+sonarqube:
+  extends: .disabled_job
+  rules:
+    - when: never
