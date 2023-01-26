@@ -66,7 +66,7 @@ function hbs(options: { additionalHelpers: any; additionalPartials: any; precomp
           const contents = [
             "import * as Handlebars from 'handlebars/runtime';", 
             ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`),
-            ...Object.entries(additionalPartials).map((name, path) => `import ${name} from '${path}';`),
+            ...Object.entries(additionalPartials).map(([name, path]) => `import ${name} from '${path}';`),
             `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`,
             `Handlebars.registerPartial({${Object.keys(additionalPartials).join()}});`,
             `export default Handlebars.template(${template});`
