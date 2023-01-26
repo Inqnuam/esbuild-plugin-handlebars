@@ -32,6 +32,7 @@ You can also set additionalHelpers and precompileOptions:
 ```js
 const hbsOptions = {
         additionalHelpers: {},
+        additionalPartials: {},
         precompileOptions: {}
       }
 

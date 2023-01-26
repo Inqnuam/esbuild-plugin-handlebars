@@ -15,12 +15,12 @@ class ESBuildHandlebarsJSCompiler extends handlebars.JavaScriptCompiler {
     return super.nameLookup(parent, name, type);
   }
 }
-function hbs(options: { additionalHelpers: any; precompileOptions: any } = { additionalHelpers: {}, precompileOptions: {} }) {
+function hbs(options: { additionalHelpers: any; additionalPartials: any; precompileOptions: any } = { additionalHelpers: {}, additionalPartials: {}, precompileOptions: {} }) {
   const onloadOpt: OnLoadOptions = {
     filter: /\.(hbs|handlebars)$/i,
   };
 
-  const { additionalHelpers = {}, precompileOptions = {} } = options;
+  const { additionalHelpers = {}, additionalPartials = {}, precompileOptions = {} } = options;
   return {
     name: "handlebars",
     setup(build: PluginBuild) {
@@ -66,7 +66,14 @@ function hbs(options: { additionalHelpers: any; precompileOptions: any } = { add
           foundHelpers = [];
           const template = hb.precompile(source, compileOptions);
           const foundAndMatchedHelpers = foundHelpers.filter((helper) => additionalHelpers[helper] !== undefined);
-          const contents = ["import * as Handlebars from 'handlebars/runtime';", ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`), `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`, `export default Handlebars.template(${template});`].join("\n");
+          const contents = [
+            "import * as Handlebars from 'handlebars/runtime';", 
+            ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`),
+            ...Object.entries(additionalPartials).map(([name, path]) => `import ${name} from '${path}';`),
+            `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`,
+            `Handlebars.registerPartial({${Object.keys(additionalPartials).join()}});`,
+            `export default Handlebars.template(${template});`
+          ].join("\n");
           return { contents };
         } catch (err: any) {
           const esBuildError = { text: err.message };
