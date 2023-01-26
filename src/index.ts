@@ -1,10 +1,9 @@
-//const handlebars = require("handlebars");
-
 import handlebars from "handlebars";
 import { PluginBuild, OnLoadOptions } from "esbuild";
 import { stat, readFile } from "fs/promises";
 
 let foundHelpers: string[] = [];
+const fileCache = new Map();
 // @ts-ignore
 class ESBuildHandlebarsJSCompiler extends handlebars.JavaScriptCompiler {
   // @ts-ignore
@@ -24,7 +23,6 @@ function hbs(options: { additionalHelpers: any; additionalPartials: any; precomp
   return {
     name: "handlebars",
     setup(build: PluginBuild) {
-      const fileCache = new Map();
       const hb = handlebars.create();
       // @ts-ignore
       hb.JavaScriptCompiler = ESBuildHandlebarsJSCompiler;
@@ -51,7 +49,6 @@ function hbs(options: { additionalHelpers: any; additionalPartials: any; precomp
           }
         }
         const source = await readFile(filename, "utf-8");
-        //const foundHelpers: string[] = [];
         const knownHelpers = Object.keys(additionalHelpers).reduce((prev: any, helper: string) => {
           prev[helper] = true;
           return prev;
@@ -66,14 +63,7 @@ function hbs(options: { additionalHelpers: any; additionalPartials: any; precomp
           foundHelpers = [];
           const template = hb.precompile(source, compileOptions);
           const foundAndMatchedHelpers = foundHelpers.filter((helper) => additionalHelpers[helper] !== undefined);
-          const contents = [
-            "import * as Handlebars from 'handlebars/runtime';", 
-            ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`),
-            ...Object.entries(additionalPartials).map(([name, path]) => `import ${name} from '${path}';`),
-            `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`,
-            `Handlebars.registerPartial({${Object.keys(additionalPartials).join()}});`,
-            `export default Handlebars.template(${template});`
-          ].join("\n");
+          const contents = ["import * as Handlebars from 'handlebars/runtime';", ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`), ...Object.entries(additionalPartials).map(([name, path]) => `import ${name} from '${path}';`), `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`, `Handlebars.registerPartial({${Object.keys(additionalPartials).join()}});`, `export default Handlebars.template(${template});`].join("\n");
           return { contents };
         } catch (err: any) {
           const esBuildError = { text: err.message };
