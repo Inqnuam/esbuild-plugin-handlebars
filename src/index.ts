@@ -63,14 +63,20 @@ function hbs(options: { additionalHelpers: any; additionalPartials: any; precomp
           foundHelpers = [];
           const template = hb.precompile(source, compileOptions);
           const foundAndMatchedHelpers = foundHelpers.filter((helper) => additionalHelpers[helper] !== undefined);
+
+          const partials = await Promise.all(Object.values(additionalPartials).map(async (path) => {
+            const source = await readFile(path as string, "utf-8");
+            return hb.precompile(source, compileOptions);;
+          }));
+
           const contents = [
             "import * as Handlebars from 'handlebars/runtime';", 
             ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`),
-            ...Object.entries(additionalPartials).map(([name, path]) => `import ${name} from '${path}';`),
             `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`,
-            `Handlebars.registerPartial({${Object.keys(additionalPartials).join()}});`,
+            ...Object.keys(additionalPartials).map((name, idx) => `Handlebars.registerPartial('${name}', Handlebars.template(${partials[idx]}));`),
             `export default Handlebars.template(${template});`
           ].join("\n");
+
           return { contents };
         } catch (err: any) {
           const esBuildError = { text: err.message };
