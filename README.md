@@ -1,6 +1,10 @@
 # esbuild-plugin-handlebars
 
-> **This is a fork of [https://github.com/Inqnuam/esbuild-plugin-handlebars](https://github.com/Inqnuam/esbuild-plugin-handlebars) and should be deprecated as soon as [https://github.com/Inqnuam/esbuild-plugin-handlebars/pull/2](https://github.com/Inqnuam/esbuild-plugin-handlebars/pull/2) is merged.**
+> **This is a fork of [https://github.com/Inqnuam/esbuild-plugin-handlebars](https://github.com/Inqnuam/esbuild-plugin-handlebars)**. 
+> 
+> It adds two modifications:
+> 1. Support for Handlebars partials
+> 2. All Handlebars helpers are registered at runtime so they are also available within partials. 
 
 > an [esbuild](https://github.com/evanw/esbuild) plugin to handle ... handlebars!
 
