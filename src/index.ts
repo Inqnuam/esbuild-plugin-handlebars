@@ -60,19 +60,17 @@ function hbs(options: { additionalHelpers: any; additionalPartials: any; precomp
           knownHelpers,
         };
         try {
-          foundHelpers = [];
           const template = hb.precompile(source, compileOptions);
-          const foundAndMatchedHelpers = foundHelpers.filter((helper) => additionalHelpers[helper] !== undefined);
 
           const partials = await Promise.all(Object.values(additionalPartials).map(async (path) => {
             const source = await readFile(path as string, "utf-8");
-            return hb.precompile(source, compileOptions);;
+            return hb.precompile(source, compileOptions);
           }));
 
           const contents = [
             "import * as Handlebars from 'handlebars/runtime';", 
-            ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`),
-            `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`,
+            ...Object.entries(additionalHelpers).map(([name, path]) => `import ${name} from '${path}';`),
+            `Handlebars.registerHelper({${Object.keys(additionalHelpers)}});`,
             ...Object.keys(additionalPartials).map((name, idx) => `Handlebars.registerPartial('${name}', Handlebars.template(${partials[idx]}));`),
             `export default Handlebars.template(${template});`
           ].join("\n");
