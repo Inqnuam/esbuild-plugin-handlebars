@@ -1,0 +1,10 @@
+  apiVersion: backstage.io/v1alpha1
+  kind: Component
+  metadata:
+    name: esbuild-plugin-handlebars
+    description: Created automatically by sourcegraph. Please modify.
+    annotations:
+      backstage.io/techdocs-ref: dir:.
+  spec:
+    type: library
+    lifecycle: production
