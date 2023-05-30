@@ -2,9 +2,10 @@
   kind: Component
   metadata:
     name: esbuild-plugin-handlebars
-    description: Created automatically by sourcegraph. Please modify.
+    description: This is a fork of https://github.com/Inqnuam/esbuild-plugin-handlebars.
     annotations:
       backstage.io/techdocs-ref: dir:.
   spec:
     type: library
+    owner: smgrealestate
     lifecycle: production
