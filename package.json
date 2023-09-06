@@ -23,6 +23,6 @@
   },
   "devDependencies": {
     "@types/node": "18.7.19",
-    "esbuild": "0.16.5"
+    "esbuild": "0.19.2"
   }
 }
