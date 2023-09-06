@@ -13,16 +13,16 @@
   "publishConfig": {
     "registry": "https://homegate.jfrog.io/homegate/api/npm/homegate-npm/"
   },
-  "dependencies": {
-    "handlebars": "^4.7.7"
-  },
-  "devDependencies": {
-    "@types/node": "^18.7.19",
-    "esbuild": "^0.16.5"
-  },
   "scripts": {
     "build": "node build.js",
     "test": "exit 0",
     "lint": "exit 0"
+  },
+  "dependencies": {
+    "handlebars": "4.7.7"
+  },
+  "devDependencies": {
+    "@types/node": "18.7.19",
+    "esbuild": "0.16.5"
   }
 }
