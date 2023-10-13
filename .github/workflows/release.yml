@@ -1,19 +1,15 @@
-name: Release
+name: Publish
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
 jobs:
-  generate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "14.x"
-          registry-url: "https://registry.npmjs.org"
-      - run: yarn install
-      - run: yarn build
-      - run: yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  publish:
+    uses: smg-real-estate/.github-ts/.github/workflows/release-lib.yml@v0.1.8
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: read
+    secrets: inherit

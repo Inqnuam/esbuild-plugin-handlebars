@@ -1,0 +1,12 @@
+name: Base
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  base:
+    uses: smg-real-estate/.github-ts/.github/workflows/lib-base.yml@v0.1.8
+    secrets: inherit
