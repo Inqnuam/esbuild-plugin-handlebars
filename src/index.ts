@@ -6,7 +6,10 @@ let foundHelpers: string[] = [];
 const fileCache = new Map();
 // @ts-ignore
 class ESBuildHandlebarsJSCompiler extends handlebars.JavaScriptCompiler {
-  // @ts-ignore
+  constructor() {
+    super(...arguments);
+  }
+  public compiler: typeof ESBuildHandlebarsJSCompiler = ESBuildHandlebarsJSCompiler;
   nameLookup(parent, name: string, type) {
     if (type === "helper" && !foundHelpers.includes(name)) {
       foundHelpers.push(name);
