@@ -4,6 +4,7 @@ import { stat, readFile } from "fs/promises";
 
 let foundHelpers: string[] = [];
 const fileCache = new Map();
+
 // @ts-ignore
 class ESBuildHandlebarsJSCompiler extends handlebars.JavaScriptCompiler {
   constructor() {
@@ -17,11 +18,12 @@ class ESBuildHandlebarsJSCompiler extends handlebars.JavaScriptCompiler {
     return super.nameLookup(parent, name, type);
   }
 }
-function hbs(options: { additionalHelpers: any; additionalPartials: any; precompileOptions: any } = { additionalHelpers: {}, additionalPartials: {}, precompileOptions: {} }) {
-  const onloadOpt: OnLoadOptions = {
-    filter: /\.(hbs|handlebars)$/i,
-  };
 
+const onloadOpt: OnLoadOptions = {
+  filter: /\.(hbs|handlebars)$/i,
+};
+
+function hbs(options: { additionalHelpers: any; additionalPartials: any; precompileOptions: any } = { additionalHelpers: {}, additionalPartials: {}, precompileOptions: {} }) {
   const { additionalHelpers = {}, additionalPartials = {}, precompileOptions = {} } = options;
   return {
     name: "handlebars",
@@ -51,22 +53,32 @@ function hbs(options: { additionalHelpers: any; additionalPartials: any; precomp
             fileCache.delete(filename);
           }
         }
+
         const source = await readFile(filename, "utf-8");
         const knownHelpers = Object.keys(additionalHelpers).reduce((prev: any, helper: string) => {
           prev[helper] = true;
           return prev;
         }, {});
+
         // Compile options
         const compileOptions = {
           ...precompileOptions,
           knownHelpersOnly: true,
           knownHelpers,
         };
+
         try {
           foundHelpers = [];
           const template = hb.precompile(source, compileOptions);
           const foundAndMatchedHelpers = foundHelpers.filter((helper) => additionalHelpers[helper] !== undefined);
-          const contents = ["import * as Handlebars from 'handlebars/runtime';", ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`), ...Object.entries(additionalPartials).map(([name, path]) => `import ${name} from '${path}';`), `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`, `Handlebars.registerPartial({${Object.keys(additionalPartials).join()}});`, `export default Handlebars.template(${template});`].join("\n");
+          const contents = [
+            "import * as Handlebars from 'handlebars/runtime';",
+            ...foundAndMatchedHelpers.map((helper) => `import ${helper} from '${additionalHelpers[helper]}';`),
+            ...Object.entries(additionalPartials).map(([name, path]) => `import ${name} from '${path}';`),
+            `Handlebars.registerHelper({${foundAndMatchedHelpers.join()}});`,
+            `Handlebars.registerPartial({${Object.keys(additionalPartials).join()}});`,
+            `export default Handlebars.template(${template});`,
+          ].join("\n");
           return { contents };
         } catch (err: any) {
           const esBuildError = { text: err.message };
